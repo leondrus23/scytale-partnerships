@@ -17,7 +17,8 @@ The US isn't a build problem. It's an activation problem. The co-sell infrastruc
 | Rising Star EMEA | AWS Partner of the Year, Technology — GSCA motion validated |
 | NorAm GSCA Activation | Zero — no PDM map, no ACE pipeline, no active co-sell |
 | AudITech Acquisition | SOX ITGC suite added June 2025 — expands ICP into GSCA's enterprise segment |
-| CPPO-Enabled | EDP drawdown available — $0 new procurement required for enterprise buyers |
+| ISV Accelerate / EDP Drawdown | Enterprise buyers transact off existing EDP commit — $0 new procurement cycle required |
+| CPPO (Channel Resell) | Year 1 activation — resellers/MSSPs execute Scytale transactions via CPPO; three-way co-sell model Meiran confirmed |
 | Vanta / Drata GSCA Status | Neither holds GSCA membership — structural co-sell differentiation |
 
 ---
