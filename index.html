@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scytale NorAm Partner Architecture — Leo Thornton</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #0B1E3C;
+      --navy-mid:#1A3461;
+      --slate:   #374151;
+      --muted:   #6B7280;
+      --border:  #E5E7EB;
+      --bg:      #F9FAFB;
+      --white:   #FFFFFF;
+      --amber:   #D97706;
+      --amber-lt:#FEF3C7;
+      --amber-bd:#FDE68A;
+      --green:   #059669;
+      --green-lt:#ECFDF5;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--slate);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── HERO ─────────────────────────────────────────── */
+    .hero {
+      background: var(--navy);
+      color: var(--white);
+      padding: 80px 48px 72px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -120px; right: -120px;
+      width: 480px; height: 480px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(217,119,6,.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      position: relative;
+    }
+    .hero-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .hero-label::before {
+      content: '';
+      display: block;
+      width: 32px; height: 1px;
+      background: var(--amber);
+    }
+    .hero-quote {
+      font-size: clamp(26px, 4vw, 40px);
+      font-weight: 700;
+      line-height: 1.22;
+      color: var(--white);
+      margin-bottom: 28px;
+      max-width: 760px;
+    }
+    .hero-quote em {
+      font-style: normal;
+      color: #93C5FD;
+    }
+    .hero-sub {
+      font-size: 16px;
+      color: rgba(255,255,255,.65);
+      max-width: 600px;
+      line-height: 1.7;
+      margin-bottom: 40px;
+    }
+    .hero-meta {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .hero-meta-item {
+      font-size: 13px;
+      color: rgba(255,255,255,.5);
+    }
+    .hero-meta-item strong {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(255,255,255,.88);
+    }
+
+    /* ─── SECTION WRAPPER ──────────────────────────────── */
+    .section {
+      padding: 72px 48px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    .section + .section {
+      border-top: 1px solid var(--border);
+    }
+    .section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 24px;
+    }
+
+    /* ─── EDP BLOCK ────────────────────────────────────── */
+    .edp-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--amber);
+      border-radius: 8px;
+      padding: 28px 32px;
+      margin-bottom: 28px;
+    }
+    .edp-card p {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--slate);
+      margin-bottom: 16px;
+    }
+    .edp-card p:last-child { margin-bottom: 0; }
+    .edp-card strong { color: var(--navy); }
+
+    /* ─── SIGNAL TABLE ─────────────────────────────────── */
+    .signal-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+    }
+    .signal-table thead th {
+      text-align: left;
+      padding: 10px 14px;
+      background: var(--navy);
+      color: rgba(255,255,255,.7);
+      font-weight: 600;
+      font-size: 11px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .signal-table thead th:first-child { border-radius: 6px 0 0 0; }
+    .signal-table thead th:last-child  { border-radius: 0 6px 0 0; }
+    .signal-table tbody tr:nth-child(even) { background: #F3F4F6; }
+    .signal-table tbody td {
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--border);
+      line-height: 1.5;
+    }
+    .signal-table tbody td:first-child {
+      font-weight: 600;
+      color: var(--navy);
+      white-space: nowrap;
+    }
+    .badge {
+      display: inline-block;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      letter-spacing: .04em;
+    }
+    .badge-red  { background: #FEE2E2; color: #991B1B; }
+    .badge-gold { background: var(--amber-lt); color: #92400E; }
+    .badge-green{ background: var(--green-lt); color: #065F46; }
+
+    /* ─── STAT ROW ─────────────────────────────────────── */
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 48px;
+    }
+    .stat-cell {
+      background: var(--white);
+      padding: 28px 24px;
+      text-align: center;
+    }
+    .stat-num {
+      font-size: 38px;
+      font-weight: 800;
+      color: var(--navy);
+      line-height: 1;
+      margin-bottom: 8px;
+      font-variant-numeric: tabular-nums;
+    }
+    .stat-num.amber { color: var(--amber); }
+    .stat-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    /* ─── PLAY CARDS ───────────────────────────────────── */
+    .plays-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .play-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .play-header {
+      background: var(--navy);
+      padding: 20px 28px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .play-num {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--amber);
+      border: 1px solid rgba(217,119,6,.4);
+      border-radius: 4px;
+      padding: 3px 9px;
+      white-space: nowrap;
+    }
+    .play-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--white);
+    }
+    .play-subtitle {
+      font-size: 12px;
+      color: rgba(255,255,255,.5);
+      font-weight: 400;
+    }
+    .play-body {
+      padding: 28px;
+    }
+    .play-row {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 12px 20px;
+      margin-bottom: 20px;
+    }
+    .play-row-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--muted);
+      padding-top: 2px;
+      line-height: 1.5;
+    }
+    .play-row-value {
+      font-size: 14px;
+      color: var(--slate);
+      line-height: 1.65;
+    }
+    .play-row-value strong { color: var(--navy); }
+    .proof-block {
+      background: var(--amber-lt);
+      border: 1px solid var(--amber-bd);
+      border-radius: 6px;
+      padding: 14px 18px;
+      margin-top: 4px;
+      font-size: 13.5px;
+      color: #78350F;
+      line-height: 1.6;
+    }
+    .proof-block::before {
+      content: '▸ Track record: ';
+      font-weight: 700;
+    }
+    .targets-list {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .targets-list li {
+      font-size: 12px;
+      font-weight: 500;
+      background: #EFF6FF;
+      color: #1E40AF;
+      border: 1px solid #BFDBFE;
+      border-radius: 4px;
+      padding: 3px 10px;
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* ─── 90-DAY ROADMAP ───────────────────────────────── */
+    .roadmap {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .roadmap-phase {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .roadmap-phase-hd {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .roadmap-days {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 4px;
+    }
+    .roadmap-phase-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .roadmap-phase-sub {
+      font-size: 11.5px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .roadmap-items {
+      padding: 16px 20px;
+      list-style: none;
+    }
+    .roadmap-items li {
+      font-size: 13px;
+      color: var(--slate);
+      padding: 7px 0;
+      border-bottom: 1px solid #F3F4F6;
+      line-height: 1.5;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .roadmap-items li:last-child { border-bottom: none; }
+    .roadmap-items li::before {
+      content: '→';
+      color: var(--amber);
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .roadmap-deliverable {
+      margin: 0 20px 16px;
+      background: var(--green-lt);
+      border: 1px solid #A7F3D0;
+      border-radius: 5px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: #065F46;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+    .roadmap-deliverable::before {
+      content: '✓ ';
+      font-weight: 700;
+    }
+
+    /* ─── WHY ME ───────────────────────────────────────── */
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    .why-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+    }
+    .why-card-icon {
+      font-size: 20px;
+      margin-bottom: 12px;
+    }
+    .why-card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+    .why-card-body {
+      font-size: 13.5px;
+      color: var(--slate);
+      line-height: 1.65;
+    }
+    .metric-inline {
+      font-family: 'DM Mono', monospace;
+      font-size: 12.5px;
+      font-weight: 500;
+      background: var(--amber-lt);
+      color: #78350F;
+      padding: 1px 6px;
+      border-radius: 3px;
+    }
+
+    /* ─── COMPETITIVE FRAME ────────────────────────────── */
+    .comp-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+    }
+    .comp-table thead th {
+      text-align: center;
+      padding: 12px 14px;
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--muted);
+      border-bottom: 2px solid var(--border);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+    .comp-table thead th:first-child { text-align: left; }
+    .comp-table tbody td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+      font-size: 13.5px;
+    }
+    .comp-table tbody td:first-child {
+      text-align: left;
+      font-weight: 600;
+      color: var(--navy);
+    }
+    .comp-table tbody tr.scytale-row {
+      background: #F0F9FF;
+    }
+    .comp-table tbody tr.scytale-row td:first-child {
+      color: #0369A1;
+    }
+    .check  { color: #059669; font-weight: 700; font-size: 16px; }
+    .cross  { color: #DC2626; font-weight: 700; font-size: 16px; }
+    .partial{ color: var(--amber); font-weight: 700; font-size: 15px; }
+
+    /* ─── CTA ──────────────────────────────────────────── */
+    .cta-section {
+      background: var(--navy);
+      padding: 60px 48px;
+    }
+    .cta-inner {
+      max-width: 760px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .cta-copy {}
+    .cta-copy h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 8px;
+    }
+    .cta-copy p {
+      font-size: 14px;
+      color: rgba(255,255,255,.55);
+      line-height: 1.6;
+    }
+    .cta-links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 220px;
+    }
+    .cta-link {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--white);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .cta-link span {
+      color: var(--amber);
+      font-size: 15px;
+    }
+    .cta-divider {
+      border: none;
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+
+    /* ─── FOOTER ───────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 28px 48px;
+      font-size: 11.5px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+
+    /* ─── RESPONSIVE ───────────────────────────────────── */
+    @media (max-width: 768px) {
+      .hero, .section, .cta-section { padding-left: 24px; padding-right: 24px; }
+      .stat-row { grid-template-columns: repeat(2, 1fr); }
+      .roadmap  { grid-template-columns: 1fr; }
+      .why-grid { grid-template-columns: 1fr; }
+      .play-row { grid-template-columns: 1fr; }
+      .play-row-label { padding-top: 0; margin-top: 12px; }
+      .cta-inner { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════ HERO ══════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-inner">
+    <p class="hero-label">US Partner Architecture · Scytale · June 2026</p>
+    <h1 class="hero-quote">
+      The GSCA motion is <em>proven</em>.<br>
+      The CPPO rail <em>exists</em>.<br>
+      The Rising Star trophy is <em>real</em>.<br>
+      None of it operates in the geography that matters.
+    </h1>
+    <p class="hero-sub">
+      Scytale's US co-sell advantage exists on paper. Three plays in 90 days to make it operational — and close Vanta and Drata's brand gap before they build what Scytale already has.
+    </p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <strong>Leo Thornton</strong>
+        Senior Partnerships &amp; Alliances
+      </div>
+      <div class="hero-meta-item">
+        <strong>Target Role</strong>
+        Director, NorAm Partnerships
+      </div>
+      <div class="hero-meta-item">
+        <strong>Prepared for</strong>
+        Meiran Galis, CEO
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════ EDP BLOCK ═════════════════════════════════ -->
+<div style="max-width:960px; margin:0 auto; padding:64px 48px 0;">
+  <p class="section-label">The Existential Data Point</p>
+  <h2 class="section-title">The $0 NorAm Pipeline Problem Is an Activation Problem, Not a Build Problem</h2>
+
+  <div class="edp-card">
+    <p>
+      Scytale holds an AWS <strong>GSCA (Global Security Compliance Accelerator)</strong> membership — a credential fewer than 50 compliance ISVs globally carry. GSCA is not ISV Accelerate. GSCA PDMs proactively identify enterprise accounts in active compliance audit cycles and <strong>introduce</strong> qualified ISVs directly — rather than waiting for partner-generated demand. Scytale proved this motion works: <strong>AWS Rising Star Partner of the Year, EMEA Technology, December 2025.</strong>
+    </p>
+    <p>
+      Zero NorAm GSCA PDM relationships are mapped. The AudITech acquisition (June 2025) extended the compliance suite to <strong>SOX ITGC</strong> — precisely the audit profile of the enterprise accounts NorAm GSCA PDMs cover: public companies, PE-backed enterprises, regulated industries requiring SOC 2 + SOX in a single platform. Scytale's CPPO capability means enterprise buyers can fund transactions off their existing <strong>EDP commits — no new procurement cycle required.</strong>
+    </p>
+    <p>
+      The US isn't a build problem. It's an activation problem. Vanta and Drata are not GSCA members. Every day without a briefed NorAm GSCA PDM is a compliance enterprise account that defaults to a competitor — not because of product, but because of presence.
+    </p>
+  </div>
+
+  <table class="signal-table">
+    <thead>
+      <tr>
+        <th style="width:200px;">Signal</th>
+        <th>Data Point</th>
+        <th style="width:90px; text-align:center;">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>GSCA Membership</td>
+        <td>Proactive co-sell credential — PDMs actively refer compliant accounts, vs. passive ISV Accelerate listing</td>
+        <td style="text-align:center;"><span class="badge badge-green">ACTIVE</span></td>
+      </tr>
+      <tr>
+        <td>Rising Star EMEA</td>
+        <td>AWS Partner of the Year, Technology (Dec 2025) — GSCA motion validated in production</td>
+        <td style="text-align:center;"><span class="badge badge-green">PROVEN</span></td>
+      </tr>
+      <tr>
+        <td>NorAm GSCA Activation</td>
+        <td>Zero PDM relationships mapped. Zero ACE co-sell pipeline. Zero active US partner pipeline (CEO-confirmed).</td>
+        <td style="text-align:center;"><span class="badge badge-red">ZERO</span></td>
+      </tr>
+      <tr>
+        <td>AudITech Acquisition</td>
+        <td>SOX ITGC suite added June 2025 — expands ICP into public companies and PE-backed enterprises that GSCA PDMs specifically cover</td>
+        <td style="text-align:center;"><span class="badge badge-gold">UNUSED</span></td>
+      </tr>
+      <tr>
+        <td>CPPO-Enabled</td>
+        <td>EDP drawdown available — enterprise buyers can transact off existing AWS commit with no new procurement cycle</td>
+        <td style="text-align:center;"><span class="badge badge-gold">UNTESTED</span></td>
+      </tr>
+      <tr>
+        <td>AWS Resilience Competency</td>
+        <td>Leo earned inaugural launch partner status at Cutover (Dec 2025) by building the AWS Workshop Studio Immersion Day — the co-sell enablement content AWS field teams deploy. Scytale's GSCA brief follows the same template.</td>
+        <td style="text-align:center;"><span class="badge badge-green">PROVEN</span></td>
+      </tr>
+      <tr>
+        <td>Vanta / Drata GSCA</td>
+        <td>Neither holds GSCA membership. Both co-sell via standard ISV Accelerate — a structurally different (and weaker) motion for compliance accounts.</td>
+        <td style="text-align:center;"><span class="badge badge-red">N/A</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ════════════════════════════ STAT ROW ══════════════════════════════════ -->
+<div style="max-width:960px; margin:0 auto; padding:40px 48px 0;">
+  <div class="stat-row">
+    <div class="stat-cell">
+      <div class="stat-num amber">0</div>
+      <div class="stat-label">Active NorAm<br>GSCA PDM Relationships</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num amber">0</div>
+      <div class="stat-label">US Partner Pipeline<br>(CEO-confirmed)</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num">35%</div>
+      <div class="stat-label">Stated Partner Revenue<br>Target — NorAm</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num">30</div>
+      <div class="stat-label">Days to First<br>GSCA PDM Briefings</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ COMPETITIVE TABLE ════════════════════════════ -->
+<div class="section">
+  <p class="section-label">Competitive Context</p>
+  <h2 class="section-title">The Co-Sell Moat Vanta and Drata Cannot Buy</h2>
+  <table class="comp-table">
+    <thead>
+      <tr>
+        <th>Capability</th>
+        <th>Scytale</th>
+        <th>Vanta</th>
+        <th>Drata</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="scytale-row">
+        <td>AWS GSCA Membership</td>
+        <td><span class="check">✓</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+      </tr>
+      <tr>
+        <td>AWS ISV Accelerate</td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+      </tr>
+      <tr class="scytale-row">
+        <td>CPPO / EDP Drawdown Capable</td>
+        <td><span class="check">✓</span></td>
+        <td><span class="partial">~</span></td>
+        <td><span class="partial">~</span></td>
+      </tr>
+      <tr>
+        <td>SOC 2 + SOX ITGC Single Suite</td>
+        <td><span class="check">✓</span> (post-AudITech)</td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="partial">~</span></td>
+      </tr>
+      <tr class="scytale-row">
+        <td>AWS Rising Star Award</td>
+        <td><span class="check">✓</span> EMEA 2025</td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+      </tr>
+      <tr>
+        <td>US Brand Recognition</td>
+        <td><span class="cross">✗</span> Building</td>
+        <td><span class="check">✓</span> Dominant</td>
+        <td><span class="check">✓</span> Enterprise</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="font-size:12px; color:var(--muted); margin-top:12px;">The brand gap is real. The GSCA gap is the answer to it — Scytale enters enterprise rooms with AWS's compliance endorsement pre-loaded. Vanta and Drata cannot replicate that starting position.</p>
+</div>
+
+<!-- ════════════════════════════ PLAY CARDS ════════════════════════════════ -->
+<div class="section">
+  <p class="section-label">Three Plays · 90-Day Horizon</p>
+  <h2 class="section-title">From Proven EMEA Motion to Operational NorAm Revenue Engine</h2>
+
+  <div class="plays-grid">
+
+    <!-- PLAY 1 -->
+    <div class="play-card">
+      <div class="play-header">
+        <span class="play-num">Play 01</span>
+        <div>
+          <div class="play-title">GSCA NorAm Activation</div>
+          <div class="play-subtitle">The co-sell infrastructure play · Days 1–30</div>
+        </div>
+      </div>
+      <div class="play-body">
+        <div class="play-row">
+          <span class="play-row-label">Diagnosis</span>
+          <span class="play-row-value">NorAm GSCA PDMs have active compliance account coverage requirements and are measured on GSCA partner activation metrics. Scytale holds GSCA membership with <strong>zero active NorAm PDM relationships.</strong> Every compliance enterprise account in a SOC 2 cycle that doesn't have a Scytale introduction in their AWS PDM's deck is invisible revenue.</span>
+        </div>
+        <div class="play-row">
+          <span class="play-row-label">The Motion</span>
+          <span class="play-row-value">Map all NorAm GSCA PDMs by sub-region. Build a 2-slide co-sell brief: <em>"When your enterprise account is in a SOC 2 or SOX audit cycle — Scytale is GSCA-approved, CPPO-enabled, and transactable off their existing EDP commit."</em> Brief 5–10 PDMs in Month 1. Submit first ACE co-sell opportunities in Month 2. Run ISV Accelerate enrollment in parallel — not as the primary play, as the safety net.</span>
+        </div>
+        <div class="play-row">
+          <span class="play-row-label">Named Targets</span>
+          <span class="play-row-value">
+            <ul class="targets-list">
+              <li>AWS GSCA Program Office (NorAm)</li>
+              <li>US-East PDM Team (NY / BOS / DC)</li>
+              <li>US-West PDM Team (SF / SEA / LA)</li>
+              <li>Central PDM Team (CHI / ATL / DAL)</li>
+              <li>ISV Accelerate (Month 2 parallel)</li>
+            </ul>
+          </span>
+        </div>
+        <div class="proof-block">At Cutover, spearheaded and built the <strong>"Increases Resilience with Cutover Automated Runbooks"</strong> AWS Workshop Studio Immersion Day — a 2-hour hands-on lab published in the AWS Builder Center catalog, covering DORA, FCA 21/3, MAS BCM, and GLBA enterprise compliance scenarios. This became the co-sell enablement asset that anchored Cutover's <strong>AWS Resilience Software Competency</strong> (inaugural launch partner, December 2025) and drove 67% FSI sales cycle compression. The Scytale GSCA co-sell brief covers SOC 2 + SOX ITGC instead of DR runbooks — but the enterprise compliance buyer, the regulatory framing, and the AWS field motion are identical. I don't just know how to brief GSCA PDMs. I've built the content they deploy.</div>
+      </div>
+    </div>
+
+    <!-- PLAY 2 -->
+    <div class="play-card">
+      <div class="play-header">
+        <span class="play-num">Play 02</span>
+        <div>
+          <div class="play-title">MSP Referral Engine</div>
+          <div class="play-subtitle">Near-term closed-won pipeline play · Days 14–60</div>
+        </div>
+      </div>
+      <div class="play-body">
+        <div class="play-row">
+          <span class="play-row-label">Diagnosis</span>
+          <span class="play-row-value">Scytale's MSP program launched November 2024. Zero US traction confirmed. Security-focused MSPs with active SOC 2 advisory practices already have clients asking about compliance — they need a referral partner, a 90-second talk track, and a close incentive. MSP-sourced deals are the only realistic path to <strong>Q2–Q3 closed-won comp</strong> given SMB/MM cycles of 1–6 months vs. enterprise cycles of 8–12.</span>
+        </div>
+        <div class="play-row">
+          <span class="play-row-label">The Motion</span>
+          <span class="play-row-value">Crossbeam account overlap mapping on Day 1 to identify shared accounts with target MSPs. Sign 3–5 MSP referral agreements with SPIFF structure ($500 per qualified referral; $2,500 per closed SMB deal). Provide plug-and-play talk track: <em>"When a client asks about SOC 2 readiness, say this."</em> Co-branded case study from the first close — makes the MSP rep look like a compliance expert in their next discovery call. Partners prioritize vendors who make their reps look good and follow up. Most don't. That's the bar.</span>
+        </div>
+        <div class="play-row">
+          <span class="play-row-label">Named Targets</span>
+          <span class="play-row-value">
+            <ul class="targets-list">
+              <li>10–15 NorAm MSSPs w/ SOC 2 advisory</li>
+              <li>Crossbeam for Day-1 overlap mapping</li>
+              <li>SPIFF live before first agreement signed</li>
+              <li>PE portfolio MSPs (Blackstone model)</li>
+            </ul>
+          </span>
+        </div>
+        <div class="proof-block">At DoiT, coined "FinSecOps" and co-branded a CrowdStrike MSSP joint GTM motion — generated $3M+ in pipeline by shifting the compliance conversation from IT to CSO/CFO and activating two-tier distribution rails that had ignored FinOps pitches entirely.</div>
+      </div>
+    </div>
+
+    <!-- PLAY 3 -->
+    <div class="play-card">
+      <div class="play-header">
+        <span class="play-num">Play 03</span>
+        <div>
+          <div class="play-title">SOX ITGC + Big 4 Wedge</div>
+          <div class="play-subtitle">Enterprise upmarket play · Days 45–90</div>
+        </div>
+      </div>
+      <div class="play-body">
+        <div class="play-row">
+          <span class="play-row-label">Diagnosis</span>
+          <span class="play-row-value">Zero GSI partnerships documented. Drata has LinkedIn and OpenAI as enterprise customers, implying Big 4-delivered implementations. The AudITech SOX ITGC acquisition created a new ICP — public companies and late-stage PE-backed enterprises needing SOC 2 + SOX in a single suite. This segment <strong>requires a Big 4 consulting relationship</strong> to reach the audit committee and procurement decision. Standard channel motions don't open this door. And Meiran Galis's background (EY Security Compliance Manager) is the warm path into the exact firm that matters most.</span>
+        </div>
+        <div class="play-row">
+          <span class="play-row-label">The Motion</span>
+          <span class="play-row-value">Warm intro to EY Cybersecurity via Meiran in Month 2. Frame the joint offer: <em>"EY handles audit readiness advisory; Scytale automates SOC 2 + SOX ITGC in platform; enterprise buyer transacts off their EDP commit via CPPO."</em> EY earns 10–15% implementation margin. Client gets Big 4 advisory + automated compliance in one motion. Expand to Deloitte Risk & Financial Advisory and PwC Compliance Automation in Month 3.</span>
+        </div>
+        <div class="play-row">
+          <span class="play-row-label">Named Targets</span>
+          <span class="play-row-value">
+            <ul class="targets-list">
+              <li>EY Cybersecurity (Meiran's network)</li>
+              <li>Deloitte Risk & Financial Advisory</li>
+              <li>PwC Compliance Automation Practice</li>
+              <li>ICP: Public cos. + PE-backed Series C+</li>
+            </ul>
+          </span>
+        </div>
+        <div class="proof-block">Built partner enablement infrastructure for 900+ GSI professionals at AWS, improving time-to-market by 37%. At Cutover, designed the partner strategy that secured AWS Migration Competency and unlocked co-sell coverage across NAMER, EMEA, ANZ, and APJ.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════ 90-DAY ROADMAP ════════════════════════════════ -->
+<div class="section">
+  <p class="section-label">Execution Architecture</p>
+  <h2 class="section-title">90-Day Revenue Architecture</h2>
+
+  <div class="roadmap">
+    <div class="roadmap-phase">
+      <div class="roadmap-phase-hd">
+        <div class="roadmap-days">Days 1 – 30</div>
+        <div class="roadmap-phase-title">Land</div>
+        <div class="roadmap-phase-sub">Audit &amp; Align</div>
+      </div>
+      <ul class="roadmap-items">
+        <li><strong>Day 1:</strong> Deal reg SLA signed with CEO + AE — rules before the first deal, not after</li>
+        <li>Audit ACE pipeline for any EMEA-origin opps with NorAm account overlap</li>
+        <li>Map all NorAm GSCA PDMs by sub-region — US-East, West, Central</li>
+        <li>Build GSCA co-sell brief (2 slides: CPPO mechanics + compliance talk track)</li>
+        <li>Crossbeam setup; 15 MSP targets identified via Apollo</li>
+      </ul>
+      <div class="roadmap-deliverable">Partner Revenue Gap Map + NorAm GSCA PDM Coverage Map + Day-1 Deal Reg Policy</div>
+    </div>
+
+    <div class="roadmap-phase">
+      <div class="roadmap-phase-hd">
+        <div class="roadmap-days">Days 31 – 60</div>
+        <div class="roadmap-phase-title">Expand</div>
+        <div class="roadmap-phase-sub">Activate &amp; Register</div>
+      </div>
+      <ul class="roadmap-items">
+        <li>Brief 5–10 NorAm GSCA PDMs; first ACE co-sell opportunities submitted</li>
+        <li>3–5 MSP referral agreements signed with SPIFF structure active</li>
+        <li>First MSP-referred qualified opportunity registered in CRM</li>
+        <li>EY Cybersecurity warm intro via Meiran — initial joint offer scoped</li>
+        <li>ISV Accelerate enrollment submitted (parallel safety net)</li>
+      </ul>
+      <div class="roadmap-deliverable">First active co-sell pipeline visible in CRM + MSP pipeline dashboard live</div>
+    </div>
+
+    <div class="roadmap-phase">
+      <div class="roadmap-phase-hd">
+        <div class="roadmap-days">Days 61 – 90</div>
+        <div class="roadmap-phase-title">Scale</div>
+        <div class="roadmap-phase-sub">Prove &amp; Report</div>
+      </div>
+      <ul class="roadmap-items">
+        <li>First GSCA co-sell opportunity in active AWS-supported pipeline</li>
+        <li>First MSP-sourced deal at late stage (SMB/MM — closes Q2–Q3)</li>
+        <li>First Big 4/EY joint opportunity scoped and in discovery</li>
+        <li>CPPO private offer infrastructure tested on first channel transaction</li>
+        <li>90-day retrospective presented to CEO on pipeline vs. quota ramp</li>
+      </ul>
+      <div class="roadmap-deliverable">Partner-influenced ARR dashboard + first closed or near-close MSP deal</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════ WHY ME ════════════════════════════════════ -->
+<div class="section">
+  <p class="section-label">Why This Hire</p>
+  <h2 class="section-title">The Four Proof Points That Make This a 30-Day Activation, Not a 12-Month Build</h2>
+
+  <div class="why-grid">
+    <div class="why-card">
+      <div class="why-card-icon">🏛</div>
+      <div class="why-card-title">Built the Content GSCA PDMs Deploy</div>
+      <div class="why-card-body">At Cutover, spearheaded the <span class="metric-inline">AWS Workshop Studio Immersion Day</span> — now published in the AWS Builder Center catalog — that anchored the AWS Resilience Software Competency (inaugural launch partner) and drove <span class="metric-inline">67% FSI cycle compression</span>. The workshop covers DORA, FCA, MAS BCM, and GLBA compliance — the same regulated-industry buyer Scytale targets for SOC 2 + SOX ITGC. I know how GSCA PDMs measure success because I built the enablement asset they used to hit their numbers.</div>
+    </div>
+    <div class="why-card">
+      <div class="why-card-icon">⚡</div>
+      <div class="why-card-title">Zero-to-One at Speed</div>
+      <div class="why-card-body">At DoiT, built the enterprise indirect channel from zero to <span class="metric-inline">$30M+ partner-sourced pipeline in 6 months</span> — 20x vs. a $1.5M quota. That wasn't a scaling motion; it was a build. Deal reg SLA in Week 1, first partner deals in Week 4, institutional infrastructure by Month 3. The pattern for Scytale is the same, with a proven EMEA co-sell model as the starting point.</div>
+    </div>
+    <div class="why-card">
+      <div class="why-card-icon">🔬</div>
+      <div class="why-card-title">Cycle Compression via AWS Funding</div>
+      <div class="why-card-body">At Cutover, designed an AWS-funded technical PoC motion that reduced FSI sales cycles from <span class="metric-inline">18 months → 180 days (67% compression)</span>. The CPPO/EDP mechanism for Scytale is the same logic applied to procurement — remove the friction point (new vendor approval cycles) by letting buyers transact off an existing AWS commitment they've already secured.</div>
+    </div>
+    <div class="why-card">
+      <div class="why-card-icon">🔗</div>
+      <div class="why-card-title">Two-Tier MSSP Activation</div>
+      <div class="why-card-body">At DoiT, coined "FinSecOps" and activated MSSPs via a CrowdStrike co-branded GTM motion that generated <span class="metric-inline">$3M+ in pipeline</span> by shifting the budget owner from IT to CSO/CFO. The MSP engine for Scytale follows the same playbook: bundle compliance into the security conversation, attach a SPIFF, and make the first three closes feel easy. That's how partners start referring without being asked.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ CTA ════════════════════════════════════ -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-copy">
+      <h2>Ready to activate the NorAm motion.</h2>
+      <p>Three plays. 90 days. The EMEA infrastructure replicated in the geography that matters. Happy to walk through any of this in detail — or dive into the 30/60/90 plan specifics during our conversation.</p>
+    </div>
+    <div class="cta-links">
+      <a class="cta-link" href="https://calendly.com/leondrus/interviews"><span>📅</span> Schedule a call</a>
+      <hr class="cta-divider">
+      <a class="cta-link" href="mailto:leondrus.thornton@gmail.com"><span>✉</span> leondrus.thornton@gmail.com</a>
+      <hr class="cta-divider">
+      <span class="cta-link" style="cursor:default; color:rgba(255,255,255,.45);"><span>👤</span> Leo Thornton</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Prepared by Leo Thornton for Scytale · Senior Partnerships &amp; Alliances Manager → Director · June 2026
+</footer>
+
+</body>
+</html>
